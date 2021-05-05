@@ -1,0 +1,130 @@
+<!-- Hangul.js library -->
+<script src="https://unpkg.com/hangul-js" type="text/javascript"></script>
+
+<div id="keyboard" align="center">
+  <textarea autofocus id="hangul-text" rows="10" style="width: 500px; font-size: 30px" onkeydown="physicalKeyboardInput();"></textarea>
+  <br><br>
+</div>
+
+<!-- Main script -->
+<script>
+  const HANGUL = {
+    'q': 'ㅂ',
+    'w': 'ㅈ',
+    'e': 'ㄷ',
+    'r': 'ㄱ',
+    't': 'ㅅ',
+    'y': 'ㅛ',
+    'u': 'ㅕ',
+    'i': 'ㅑ',
+    'o': 'ㅐ',
+    'p': 'ㅔ',
+    'a': 'ㅁ',
+    's': 'ㄴ',
+    'd': 'ㅇ',
+    'f': 'ㄹ',
+    'g': 'ㅎ',
+    'h': 'ㅗ',
+    'j': 'ㅓ',
+    'k': 'ㅏ',
+    'l': 'ㅣ',
+    'z': 'ㅋ',
+    'x': 'ㅌ',
+    'c': 'ㅊ',
+    'v': 'ㅍ',
+    'b': 'ㅠ',
+    'n': 'ㅜ',
+    'm': 'ㅡ',
+    'Q': 'ㅃ',
+    'W': 'ㅉ',
+    'E': 'ㄸ',
+    'R': 'ㄲ',
+    'T': 'ㅆ',
+    'O': 'ㅒ',
+    'P': 'ㅖ',
+  };
+  
+  // handle user input from physical keyboard
+  function physicalKeyboardInput() {
+    // extract pressed key
+    let key = window.event.key;
+    
+    // if corresponding character exists
+    if (HANGUL[key]) {
+      // hack to avoid printing roman letters
+      window.event.preventDefault();
+      
+      // extract textarea DOM element
+      let text = document.getElementById('hangul-text');
+      
+      // input hangul characters instead of roman characters
+      text.value += HANGUL[key];
+      
+      // disassemble characters
+      let parsed = Hangul.disassemble(text.value);
+
+      // assemble characters
+      text.value = Hangul.assemble(parsed);
+    }
+  }
+  
+  // handle user input from screen keyboard
+  function screenKeyboardInput(button) {
+    // extract button character
+    let key = button.innerHTML;
+    
+    // extract textarea DOM element
+    let text = document.getElementById('hangul-text');
+
+    // force focus on textarea
+    text.focus();
+        
+    // input hangul characters from screen keyboard
+    if (button == ' ') text.value += ' ';
+    else if (button == '\b') text.value = text.value.slice(0, -1);
+    else text.value += key;
+
+    // disassemble characters
+    let parsed = Hangul.disassemble(text.value);
+
+    // assemble characters
+    text.value = Hangul.assemble(parsed);
+  }
+  
+  //
+  // render screen keyboard
+  //
+  
+  // extract keyboard DOM element
+  let keyboard = document.getElementById('keyboard');
+  
+  // loop ove all the hangul characters
+  Object.values(HANGUL).forEach((character, count) => {
+    
+    // append buttons to keyboard
+    keyboard.innerHTML += '<button onclick="screenKeyboardInput(this);" style="font-size: 34px;">' + character + '</button>';
+    
+    // split buttons into 4 rows
+    if (count == 9 || count == 18 || count == 25)
+      keyboard.innerHTML += '<br>'
+  });
+  
+  // render SPASE and BACKSPACE buttons
+  keyboard.innerHTML += `
+    <br><br>
+    <button onclick="screenKeyboardInput(' ')" style="font-size: 30px;">SPACE</button>
+    <button onclick="screenKeyboardInput('\b')" style="font-size: 30px;">ERASE</button>
+  `
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
